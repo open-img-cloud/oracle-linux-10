@@ -50,7 +50,7 @@ Customisations applied to the upstream rootfs:
 
 The upstream OL10 KVM template already ships cloud-init, openssh-server,
 GRUB2 with serial console wired (`console=tty0 console=ttyS0,115200`),
-and a default user (`oracle` or `cloud-user` depending on build) — we
+and a default user (`oracle` or `cloud-user` depending on build): we
 don't override any of that.
 
 Each release publishes:
@@ -91,7 +91,7 @@ cosign verify-blob \
 ```
 
 The certificate identity points at the **reusable** build workflow in
-`open-img-cloud/.github` — that's where GitHub's OIDC binds the SAN for
+`open-img-cloud/.github`: that's where GitHub's OIDC binds the SAN for
 keyless signing. To tie the artifact back to *this* repo's commit, also
 check `MANIFEST.json` (commit, build_url, builder digest).
 
@@ -164,7 +164,7 @@ Distributed under the GPL-2.0 License. See `LICENSE`.
 
 ## Contact
 
-Kevin Allioli — kevin@stackops.ch · [@stackopshq](https://twitter.com/stackopshq)
+Kevin Allioli · kevin@stackops.ch · [@stackopshq](https://twitter.com/stackopshq)
 
 Project: [open-img-cloud/oracle-linux-10](https://github.com/open-img-cloud/oracle-linux-10)
 

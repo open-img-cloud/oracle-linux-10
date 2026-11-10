@@ -12,7 +12,7 @@
 # `10.<U>-b<B>` (e.g. 10.1-b270) as the VERSION string. The reusable
 # release workflow rebuilds the upstream URL by parsing this back.
 #
-# Runs in the upstream-watch reusable workflow (no KVM needed) — keep
+# Runs in the upstream-watch reusable workflow (no KVM needed): keep
 # it portable bash + curl + sed + sort only.
 
 set -euo pipefail
