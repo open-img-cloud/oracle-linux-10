@@ -26,6 +26,9 @@ fi
 echo "[customize] target: $QCOW2"
 
 virt-customize -a "$QCOW2" \
+  --mkdir /var/lib/cloud/scripts/per-boot \
+  --copy-in "$(dirname -- "${BASH_SOURCE[0]}")/config/oic-grow-lvm-root.sh:/var/lib/cloud/scripts/per-boot/" \
+  --run-command 'chmod 0755 /var/lib/cloud/scripts/per-boot/oic-grow-lvm-root.sh' \
   --run-command 'rm -rf /var/cache/dnf /var/cache/yum /tmp/* /var/tmp/*'
 
 echo "[customize] done"
