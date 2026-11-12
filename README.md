@@ -1,192 +1,123 @@
-<div id="top"></div>
+<p align="center">
+  <a href="https://openimages.cloud/images/oracle-linux-10/">
+    <img src="https://openimages.cloud/img/og/oracle-linux-10.png" alt="Oracle Linux 10 cloud image for OpenStack and Proxmox" width="720">
+  </a>
+</p>
 
-<!-- PROJECT SHIELDS -->
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![GPL-2.0 License][license-shield]][license-url]
+<p align="center">
+  <a href="https://openimages.cloud/images/oracle-linux-10/"><img alt="Latest version" src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fimages.openimages.cloud%2Foracle-linux-10%2Flatest%2FMANIFEST.json&query=%24.version&label=latest&color=2459c4&cacheSeconds=3600"></a>
+  <a href="https://github.com/open-img-cloud/oracle-linux-10/actions/workflows/release.yml"><img alt="Release" src="https://github.com/open-img-cloud/oracle-linux-10/actions/workflows/release.yml/badge.svg"></a>
+  <a href="https://openimages.cloud/verify/"><img alt="Signed with Sigstore cosign" src="https://img.shields.io/badge/signed-Sigstore%20cosign-2459c4"></a>
+  <a href="https://openimages.cloud/quality/"><img alt="Boot-tested on OpenStack" src="https://img.shields.io/badge/boot--tested-OpenStack-2459c4"></a>
+  <a href="LICENSE"><img alt="License GPL-2.0" src="https://img.shields.io/badge/license-GPL--2.0-555"></a>
+</p>
 
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
+<p align="center">
+  <a href="https://openimages.cloud/images/oracle-linux-10/"><b>Catalog page</b></a> ·
+  <a href="https://images.openimages.cloud/oracle-linux-10/latest/">Download</a> ·
+  <a href="https://openimages.cloud/verify/">Verify</a> ·
+  <a href="https://github.com/open-img-cloud/docs">Documentation</a> ·
+  <a href="https://github.com/open-img-cloud/oracle-linux-10/issues">Report an issue</a>
+</p>
 
-<h3 align="center">Oracle Linux 10 Cloud Images</h3>
+Oracle Linux 10 cloud image (qcow2) for **OpenStack** and **Proxmox**: Oracle's official
+KVM template, verified, made ready for both clouds with the same rules as every
+[openimages.cloud](https://openimages.cloud) image, signed with Sigstore cosign and boot-tested
+on a real OpenStack before it is published.
 
-  <p align="center">
-    Cloud-init-ready, signed Oracle Linux 10 images for OpenStack and Proxmox
-    <br />
-    <br />
-    <a href="https://github.com/open-img-cloud/oracle-linux-10/issues">Report a bug</a>
-    ·
-    <a href="https://github.com/open-img-cloud/oracle-linux-10/issues">Request a feature</a>
-  </p>
-</div>
+## At a glance
 
-## About
+| | |
+|---|---|
+| **Upstream** | [Oracle Linux](https://www.oracle.com/linux/) KVM template `OL10U<update>_x86_64-kvm-b<build>.qcow2` from [yum.oracle.com](https://yum.oracle.com/oracle-linux-templates.html), checked against the SHA-256 Oracle publishes on that page |
+| **Default user** | `cloud-user`, SSH key only, passwordless `sudo` |
+| **Firmware** | BIOS |
+| **Format** | qcow2, x86_64, LVM root grown to the disk at every boot |
+| **Version** | `10.<update>-b<build>`, mirroring Oracle's template naming, e.g. `10.1-b291` ([all versions](https://images.openimages.cloud/oracle-linux-10/versions.json)) |
+| **Support** | Oracle Linux premier and extended support, see Oracle's lifetime support policy |
 
-This repo builds [Oracle Linux 10][ol10] cloud images on top of the
-upstream `OL10U<U>_x86_64-kvm-b<B>.qcow2` KVM templates published at
-[yum.oracle.com/oracle-linux-templates.html][upstream] and republishes
-them through the openimages.cloud signed-release pipeline.
-
-OL10 was released 2025-07 and is supported under Oracle's premier
-support until **2030-07-31** (extended support to 2032-07-31). For
-OL9 (premier support until 2032-06), see the sibling repo
-[open-img-cloud/oracle-linux-9][ol9-repo].
-
-The build pipeline is shared with the rest of [`open-img-cloud`][org]:
-this repo only ships the `VERSION`, `customize.sh`, `detect-upstream.sh`,
-and two thin caller workflows that delegate to the reusable workflows
-in [`open-img-cloud/.github`][shared] (`@main`).
-
-Customisations applied to the upstream rootfs:
-
-- **Org-wide cloud-init policy drop-in** (`99_oic-policy.cfg`) injected
-  by the reusable workflow into `/etc/cloud/cloud.cfg.d/`, pinning
-  `datasource_list: [OpenStack, ConfigDrive, NoCloud, None]` and
-  `disable_root: true` / `ssh_pwauth: false`
-- **`virt-sysprep`** to clean transient state, then `virt-sparsify --compress`
-
-The upstream OL10 KVM template already ships cloud-init, openssh-server,
-GRUB2 with serial console wired (`console=tty0 console=ttyS0,115200`),
-and a default user (`oracle` or `cloud-user` depending on build): we
-don't override any of that.
-
-Each release publishes:
-
-- `oracle-linux-10-<version>-x86_64.qcow2`
-- `*.sha256`, `*.sha1`, `*.md5` per-file
-- `*.bundle` cosign sigstore-bundle (signature + cert + Rekor proof)
-- `MANIFEST.json` (build metadata, including the builder image digest)
-- `index.html` directory listing
-
-`<version>` is `10.<update>-b<build>` (e.g. `10.1-b270`), mirroring
-Oracle's own OL{R}U{U}-b{B} naming.
-
-## Where to download
-
-Public CDN, served via Cloudflare in front of an R2 bucket (mirror of
-the source-of-truth Garage):
-
-| URL pattern                                                                           | Cache policy                  |
-|---------------------------------------------------------------------------------------|-------------------------------|
-| `https://images.openimages.cloud/oracle-linux-10/<version>/<filename>`                | `max-age=31536000, immutable` |
-| `https://images.openimages.cloud/oracle-linux-10/latest/<filename>`                   | `max-age=300`                 |
-
-Browse: [images.openimages.cloud/oracle-linux-10/latest/][latest]
-
-## Verify before deploy
-
-cosign 3.x:
+## Quick start
 
 ```sh
-sha256sum -c <filename>.sha256                    # integrity
-cosign verify-blob \
-    --bundle <filename>.bundle \
-    --new-bundle-format \
-    --certificate-identity-regexp '^https://github.com/open-img-cloud/\.github/\.github/workflows/build-libguestfs-image\.yml@' \
-    --certificate-oidc-issuer https://token.actions.githubusercontent.com \
-    <filename>                                     # provenance
+# Latest version and its file name, from the signed manifest
+M=https://images.openimages.cloud/oracle-linux-10/latest/MANIFEST.json
+V=$(curl -fsS $M | jq -r .version); F=$(curl -fsS $M | jq -r .filename)
+curl -fLO https://images.openimages.cloud/oracle-linux-10/$V/$F
 ```
 
-The certificate identity points at the **reusable** build workflow in
-`open-img-cloud/.github`: that's where GitHub's OIDC binds the SAN for
-keyless signing. To tie the artifact back to *this* repo's commit, also
-check `MANIFEST.json` (commit, build_url, builder digest).
-
-## How to use
-
-### OpenStack
+<details>
+<summary><b>OpenStack</b></summary>
 
 ```sh
-# Pull the qcow2 (replace <V> with the desired version, e.g. 10.1-b270)
-curl -fLO https://images.openimages.cloud/oracle-linux-10/<V>/oracle-linux-10-<V>-x86_64.qcow2
-
-openstack image create \
-    --disk-format qcow2 --container-format bare \
-    --min-disk 40 \
-    --file oracle-linux-10-<V>-x86_64.qcow2 \
-    'Oracle Linux 10 <V>'
+openstack image create --disk-format qcow2 --container-format bare \
+  --min-disk 40 \
+  --property os_distro=ol --property os_version=10 \
+  --property os_admin_user=cloud-user \
+  --file "$F" "Oracle Linux 10"
 ```
 
-### Proxmox VE
+The full property set (SCSI disk, multiqueue, quiesced snapshots) is on the
+[catalog page](https://openimages.cloud/images/oracle-linux-10/) and in
+[`index.json`](https://images.openimages.cloud/index.json). To keep images up to date
+automatically, use [oic-sync](https://github.com/open-img-cloud/oic-sync).
+
+</details>
+
+<details>
+<summary><b>Proxmox VE</b></summary>
+
+The commands to create a cloud-init template from this image are on the
+[catalog page](https://openimages.cloud/images/oracle-linux-10/).
+
+</details>
+
+<details>
+<summary><b>Verify the signature</b></summary>
 
 ```sh
-scp oracle-linux-10-<V>-x86_64.qcow2 root@proxmox:/var/lib/vz/template/iso/
-
-qm create <VMID> --name ol10-template --memory 2048 --cores 2 --net0 virtio,bridge=vmbr0
-qm importdisk <VMID> oracle-linux-10-<V>-x86_64.qcow2 <STORAGE>
-qm set <VMID> --scsihw virtio-scsi-pci --scsi0 <STORAGE>:vm-<VMID>-disk-0
-qm set <VMID> --boot c --bootdisk scsi0
-qm set <VMID> --ide2 <STORAGE>:cloudinit
-qm set <VMID> --serial0 socket --vga serial0
-qm set <VMID> --ciuser cloud-user --sshkeys ~/.ssh/authorized_keys --ipconfig0 ip=dhcp
+curl -fLO https://images.openimages.cloud/oracle-linux-10/$V/$F.bundle
+cosign verify-blob "$F" --bundle "$F.bundle" \
+  --certificate-identity-regexp '^https://github.com/open-img-cloud/\.github/\.github/workflows/build-(libguestfs|dib|nix-flake|freebsd)-image\.yml@' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
 ```
 
-## Release flow
+</details>
 
-1. **`watch.yml`** runs daily 06:47 UTC, calls `build/detect-upstream.sh`
-   which parses `oracle-linux-templates.html` for OL10 KVM artifacts and
-   emits `10.<U>-b<B>` for the highest (U, B) pair.
-2. If the version differs from the current `VERSION`, the workflow opens
-   (or updates) a PR `auto/upstream-bump`.
-3. Merging the PR + pushing a `v<VERSION>` tag fires `release.yml`,
-   which calls the shared `build-libguestfs-image.yml@main` reusable
-   workflow.
-4. Each build reads Oracle's published SHA-256 for the exact template
-   from `oracle-linux-templates.html` (`build/upstream-sha256.sh`),
-   downloads the upstream qcow2 and fails on a checksum mismatch, then
-   runs `customize.sh`,
-   sysprep, sparsify, signs, and uploads to Garage + R2 under
-   `s3://oracle-linux-10/<version>/`.
+## What this image changes
 
-## Repository layout
+On top of the official image, and nothing else:
 
-```
-VERSION                          single line, e.g. "10.1-b270"
-build/
-  customize.sh                   virt-customize hook (qcow2 path as $1)
-  detect-upstream.sh             parses oracle-linux-templates.html
-  upstream-sha256.sh             Oracle SHA-256 of one template from that page
-.github/workflows/
-  release.yml                    calls build-libguestfs-image.yml on tag push
-  watch.yml                      daily cron, calls upstream-watch.yml
-.gitignore                       repo-local override for global build/ exclusion
-LICENSE                          GPL-2.0
-```
+- adds a cloud-init per-boot script that grows the LVM root (partition, physical volume,
+  root logical volume and its filesystem) to the whole disk: cloud-init's own `growpart`
+  skips an unencrypted LVM root, so the flavor disk beyond the image size stayed unused;
+- adds the openimages.cloud cloud-init policy: config drive read first, then the metadata
+  service; no root login, no SSH password;
+- cleans package caches and machine identity so every instance starts fresh.
 
-## Contributing
+Every release must pass the same [runtime contract](https://openimages.cloud/quality/) on
+OpenStack: SSH with the injected key, cloud-init finished, DNS, hostname, root filesystem grown,
+passwordless `sudo`, IPv6 address and egress.
 
-Fork, branch, PR. Keep changes focused; the customize hook in particular
-is consumed by the shared pipeline so backward-compatible tweaks are
-preferred over rewrites.
+## Notes
+
+- The image declares a 37 GB virtual disk: use a flavor with at least a 40 GB root disk.
+- `qemu-guest-agent` is not added: Oracle's pinned package snapshot does not reliably
+  provide it, so it is left out until the right repository is identified.
+
+## How releases happen
+
+1. Every day at 06:47 UTC a watcher looks for a new upstream image and opens a pull request
+   that bumps [`VERSION`](VERSION).
+2. Merging it is all it takes: the release is tagged, built, signed, boot-tested and
+   published, then `latest/` and the [catalog](https://openimages.cloud/images/) move to it.
+
+This repository only holds what is specific to Oracle Linux 10: [`VERSION`](VERSION),
+[`build/customize.sh`](build/customize.sh), [`build/config/oic-grow-lvm-root.sh`](build/config/oic-grow-lvm-root.sh),
+[`build/detect-upstream.sh`](build/detect-upstream.sh), [`build/upstream-sha256.sh`](build/upstream-sha256.sh)
+and thin workflows calling the shared pipeline in
+[`open-img-cloud/.github`](https://github.com/open-img-cloud/.github).
 
 ## License
 
-Distributed under the GPL-2.0 License. See `LICENSE`.
-
-## Contact
-
-Kevin Allioli · kevin@stackops.ch · [@stackopshq](https://twitter.com/stackopshq)
-
-Project: [open-img-cloud/oracle-linux-10](https://github.com/open-img-cloud/oracle-linux-10)
-
-[ol10]: https://www.oracle.com/linux/
-[ol9-repo]: https://github.com/open-img-cloud/oracle-linux-9
-[upstream]: https://yum.oracle.com/oracle-linux-templates.html
-[org]: https://github.com/open-img-cloud
-[shared]: https://github.com/open-img-cloud/.github
-[latest]: https://images.openimages.cloud/oracle-linux-10/latest/
-
-<!-- shields -->
-[contributors-shield]: https://img.shields.io/github/contributors/open-img-cloud/oracle-linux-10.svg?style=for-the-badge
-[contributors-url]: https://github.com/open-img-cloud/oracle-linux-10/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/open-img-cloud/oracle-linux-10.svg?style=for-the-badge
-[forks-url]: https://github.com/open-img-cloud/oracle-linux-10/network/members
-[stars-shield]: https://img.shields.io/github/stars/open-img-cloud/oracle-linux-10.svg?style=for-the-badge
-[stars-url]: https://github.com/open-img-cloud/oracle-linux-10/stargazers
-[issues-shield]: https://img.shields.io/github/issues/open-img-cloud/oracle-linux-10.svg?style=for-the-badge
-[issues-url]: https://github.com/open-img-cloud/oracle-linux-10/issues
-[license-shield]: https://img.shields.io/github/license/open-img-cloud/oracle-linux-10.svg?style=for-the-badge
-[license-url]: https://github.com/open-img-cloud/oracle-linux-10/blob/main/LICENSE
+The build tooling in this repository is under [GPL-2.0](LICENSE). The image keeps the licensing
+terms of Oracle Linux (free software under the license of each package). Oracle Linux is a trademark of its owner; this project is not affiliated with Oracle.
